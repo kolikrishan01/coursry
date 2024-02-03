@@ -1,0 +1,44 @@
+header{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.navlink{
+    position: relative;
+}
+.navlink li{
+transition: .3s ease-in-out;
+cursor: pointer;
+}
+.navlink li:hover{
+    color: #fdc04c;
+}
+.navlink li span{
+    color: #000 !important;
+}
+
+.course-dropdwon{
+border: 1px solid black;
+position: fixed;
+left: 45%;
+top: 60px;
+width: 200px;
+height: 200px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-direction: column;
+display: none;
+}
+.course-dropdwon li{
+border-bottom: .5px solid black;
+width: 100%;
+text-align: center;
+}
+.active::after{
+content: "";
+position: absolute;
+width: 90px;
+background-color: #3a9dd3;
+bottom: 0;
+height: 2px;
+border-radius: 8px;
+}
