@@ -1,11 +1,9 @@
 import React from 'react'
 
-const Button = ({py,px,bg, borderRadius}) => {
+const Button = () => {
   return (
     <div>
-      <button className={`${py} ${px} ${bg} ${borderRadius}`}>
-        Login
-      </button>
+      
     </div>
   )
 }
