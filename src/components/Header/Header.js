@@ -119,7 +119,7 @@ export default function Header() {
             ABOUT US
           </a>
           <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 outline-none">
               COURSES
               <ChevronDownIcon
                 className="h-5 w-5 flex-none text-gray-400"
@@ -171,7 +171,7 @@ export default function Header() {
             CONTESTS
           </a>
           <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 outline-none">
               MORE
               <ChevronDownIcon
                 className="h-5 w-5 flex-none text-gray-400"
