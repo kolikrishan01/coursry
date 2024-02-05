@@ -1,14 +1,12 @@
-import React from 'react'
-import Header from '../Header/Header'
-
+import React from "react";
+import Header from "../Header/Header";
 
 const Layout = () => {
   return (
     <div>
-      <Header />
-
+      <h1>Working on Website</h1>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
