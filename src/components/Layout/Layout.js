@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Banner from "../LandingPage/Bannner";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import About from "../AboutPage/About";
@@ -23,13 +22,14 @@ import JobGuarantee from "../CoursesPage/JobGuarantee";
 import DigitalMarketing from "../CoursesPage/DigitalMarketing";
 import NotFound from "../404NotFound/NotFound";
 import SignUp from "../Authentication/SignUp/SignUp";
+import Home from "../LandingPage/Home";
 
 const Layout = () => {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Banner />} />
+        <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
 
         {/* Courses Routes */}
