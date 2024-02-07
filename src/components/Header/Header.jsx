@@ -96,8 +96,48 @@ export default function Header() {
       >
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
-            <img className="h-8 w-auto" src={logo} alt="" />
+            <img className="h-[50px] w-[120px]" src={logo} alt="" />
           </Link>
+          <Popover className="relative bg-blue-600 rounded ml-[80px] hidden lg:flex lg:gap-x-12">
+            <Popover.Button className="flex items-center p-3 text-white gap-x-1 text-sm font-semibold leading-6 outline-none ">
+              Courses
+              <ChevronDownIcon
+                className="h-5 w-5 flex-none text-white"
+                aria-hidden="true"
+              />
+            </Popover.Button>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-150"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+                <div className="p-4">
+                  {Courses.map((item) => (
+                    <div
+                      key={item.name}
+                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                    >
+                      <div className="flex-auto">
+                        <Link
+                          to={item.href}
+                          className="block font-semibold text-gray-900"
+                        >
+                          {item.name}
+                          <span className="absolute inset-0" />
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </Popover>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -110,19 +150,7 @@ export default function Header() {
           </button>
         </div>
         <Popover.Group className="hidden lg:flex lg:gap-x-12">
-          <Link
-            to="/"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            HOME
-          </Link>
-          <Link
-            to="/about"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            ABOUT US
-          </Link>
-          <Popover className="relative">
+          {/* <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 outline-none">
               COURSES
               <ChevronDownIcon
@@ -161,64 +189,84 @@ export default function Header() {
                 </div>
               </Popover.Panel>
             </Transition>
-          </Popover>
-          <Link
-            to="/jobs"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            JOBS
-          </Link>
-          <Link
-            to="contests"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            CONTESTS
-          </Link>
-          <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 outline-none">
-              MORE
-              <ChevronDownIcon
-                className="h-5 w-5 flex-none text-gray-400"
-                aria-hidden="true"
-              />
-            </Popover.Button>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
+          </Popover> */}
+          <div className="group">
+            <Link
+              to="/refer"
+              className="text-sm font-semibold leading-6 text-gray-900 relative inline-block"
             >
-              <Popover.Panel className="absolute -left-20 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                <div className="p-4">
-                  {More.map((item) => (
-                    <div
-                      key={item.name}
-                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
-                    >
-                      <div className="flex-auto">
-                        <Link
-                          to={item.href}
-                          className="block font-semibold text-gray-900"
-                        >
-                          {item.name}
-                          <span className="absolute inset-0" />
-                        </Link>
+              Refer And Earn
+              <span className="absolute left-0 bottom-0 w-full h-1 bg-blue-600 transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
+            </Link>
+          </div>
+
+          <div className="group">
+            <Link
+              to="contests"
+              className="text-sm font-semibold leading-6 text-gray-900 relative inline-block"
+            >
+              Contests
+              <span className="absolute left-0 bottom-0 w-full h-1 bg-blue-600 transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
+            </Link>
+          </div>
+          <div className="group">
+            <Link
+              to="/about"
+              className="text-sm font-semibold leading-6 text-gray-900 relative inline-block"
+            >
+              About Us
+              <span className="absolute left-0 bottom-0 w-full h-1 bg-blue-600 transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
+            </Link>
+          </div>
+          <div className="group">
+            <Popover className="relative">
+              <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 outline-none">
+                More
+                <span className="absolute left-0 bottom-0 w-full h-1 bg-blue-600 transform scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
+                <ChevronDownIcon
+                  className="h-5 w-5 flex-none text-black"
+                  aria-hidden="true"
+                />
+              </Popover.Button>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0 translate-y-1"
+                enterTo="opacity-100 translate-y-0"
+                leave="transition ease-in duration-150"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 translate-y-1"
+              >
+                <Popover.Panel className="absolute -left-20 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+                  <div className="p-4">
+                    {More.map((item) => (
+                      <div
+                        key={item.name}
+                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                      >
+                        <div className="flex-auto">
+                          <Link
+                            to={item.href}
+                            className="block font-semibold text-gray-900"
+                          >
+                            {item.name}
+                            <span className="absolute inset-0" />
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </Popover.Panel>
-            </Transition>
-          </Popover>
+                    ))}
+                  </div>
+                </Popover.Panel>
+              </Transition>
+            </Popover>
+          </div>
         </Popover.Group>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+
+        <div className="hidden lg:flex lg:flex-1 lg:justify-center">
           <Link
             to="/login"
-            className="text-sm font-semibold leading-6 text-gray-900"
+            className="text-sm font-semibold leading-6 bg-blue-600 p-3 text-white rounded ml-[-20px]"
           >
             Log in <span aria-hidden="true">&rarr;</span>
           </Link>
@@ -234,7 +282,7 @@ export default function Header() {
         <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link to="/" className="-m-1.5 p-1.5">
-              <img className="h-8 w-auto" src={logo} alt="" />
+              <img className="h-12 w-auto" src={logo} alt="" />
             </Link>
             <button
               type="button"
@@ -248,23 +296,11 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Link
-                  to="/"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  HOME
-                </Link>
-                <Link
-                  to="/about"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  ABOUT US
-                </Link>
                 <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
                       <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                        COURSES
+                        Courses
                         <ChevronDownIcon
                           className={classNames(
                             open ? "rotate-180" : "",
@@ -282,6 +318,7 @@ export default function Header() {
                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                           >
                             {item.name}
+                            {/* <hr className="border-blue-600" /> */}
                           </Disclosure.Button>
                         ))}
                       </Disclosure.Panel>
@@ -289,22 +326,29 @@ export default function Header() {
                   )}
                 </Disclosure>
                 <Link
-                  to="/jobs"
+                  to="/"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  JOBS
+                  Refer And Earn
                 </Link>
+                <Link
+                  to="/about"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                >
+                  About Us
+                </Link>
+
                 <Link
                   to="/contests"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  CONTESTS
+                  Contests
                 </Link>
                 <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
                       <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                        MORE
+                        More
                         <ChevronDownIcon
                           className={classNames(
                             open ? "rotate-180" : "",
@@ -332,7 +376,7 @@ export default function Header() {
               <div className="py-6">
                 <Link
                   to="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 bg-blue-600 text-center text-white"
                 >
                   Log in
                 </Link>
