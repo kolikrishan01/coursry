@@ -5,9 +5,11 @@ import { FaInstagram } from "react-icons/fa6";
 import { FaYoutube } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
 import { IoLogoTwitter } from "react-icons/io";
+import { FaPhoneAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const Footer = () => {
   return (
+    <>
     <footer class=" bg-[#F8F9F9]">
       <div class="container p-6 mx-auto">
         <div class="lg:flex">
@@ -169,6 +171,21 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+    <div className=" w-full h-[70px] sticky bottom-0 bg-[#2C3E50] text-white z-50 flex items-center justify-evenly flex-wrap max-sm:gap-2 max-sm:h-[90px]">
+    <div className=" flex items-center justify-center gap-8">
+     <span className=" flex items-center justify-center gap-2">
+     <FaPhoneAlt />
+      <p>Request a Callback</p>
+     </span>
+                <Link className="-mx-3 block rounded-lg px-6 py-1 text-base font-semibold leading-7 bg-blue-600 text-center text-white">
+                  Call
+                </Link>
+    </div>
+    <div>
+    <p>For Career Assistance- Callus on-(+91-XXXX-9890-87)</p>
+    </div>
+    </div>
+    </>
   );
 };
 

@@ -3,14 +3,16 @@ import React from "react";
 const Webinars = () => {
   return (
     <>
-      <h1 className="flex justify-center font-bold text-5xl text-[#10125c]">
+      <div className=" flex items-center justify-center h-[150px]">
+      <h1 className="text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]">
         W
         <span className="bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text">
           ebinars
         </span>
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 p-6">
-        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ">
+      </div>
+      <div className=" flex items-center justify-center gap-8 flex-wrap p-6">
+        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
           <div className="flex justify-center items-center">
             <svg
               className="w-7 h-7 text-white dark:text-white mb-3"

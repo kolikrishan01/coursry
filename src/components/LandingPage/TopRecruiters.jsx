@@ -39,8 +39,8 @@ export default function TopRecruiters() {
   return (
     <>
     
-    <div className=' w-full flex items-center justify-center'>
-  <h1 className='text-6xl max-sm:text-4xl max-md:4xl font-semibold uppercase text-[#10125c] pt-16'>Our Top Re<span className='bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text'>cruiters</span></h1>
+    <div className=' w-full flex items-center justify-center h-[150px]'>
+  <h1 className='text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]'>Our Top Re<span className='bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text'>cruiters</span></h1>
 </div>
       <Swiper
         slidesPerView={6}
