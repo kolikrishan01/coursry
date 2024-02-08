@@ -7,6 +7,11 @@ import { FaFacebook } from "react-icons/fa";
 import { IoLogoTwitter } from "react-icons/io";
 import { FaPhoneAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import facebook from "../assets/facebook_5968764.png";
+import instagram from "../assets/instagram_2111463.png";
+import linkedin from "../assets/linkedin_145807.png";
+import twitter from "../assets/twitter_5969020.png";
+import youtube from "../assets/youtube_1384060.png";
 const Footer = () => {
   return (
     <>
@@ -21,19 +26,43 @@ const Footer = () => {
 
               <div class="flex items-center gap-5 mt-6 -mx-2 max-sm:-mx-0 max-sm:flex-wrap">
                 <span className=" h-[50px] w-[50px] rounded-full flex items-center justify-center bg-white hover:bg-[#3a9dd3] hover:text-white text-[#3a9dd3] transition ease-in-out delay-150">
-                  <FaLinkedin />
+                  {/* <FaLinkedin /> */}
+                  <Link
+                    to="https://www.linkedin.com/company/coursry-future-techies/about/"
+                    target="_blank"
+                  >
+                    <img className="w-auto h-7" src={linkedin} alt="FB" />
+                  </Link>
                 </span>
                 <span className=" h-[50px] w-[50px] rounded-full flex items-center justify-center bg-white hover:bg-[#D34E60] hover:text-white text-[#3a9dd3] transition ease-in-out delay-150">
-                  <FaInstagram />
+                  {/* <FaInstagram /> */}
+                  <Link
+                    to="https://www.instagram.com/coursry_edu/"
+                    target="_blank"
+                  >
+                    <img className="w-auto h-7" src={instagram} alt="FB" />
+                  </Link>
                 </span>
                 <span className=" h-[50px] w-[50px] rounded-full flex items-center justify-center bg-white hover:bg-[#FF0100] hover:text-white text-[#3a9dd3] transition ease-in-out delay-150">
-                  <FaYoutube />
+                  {/* <FaYoutube /> */}
+                  <Link
+                    to="https://www.youtube.com/channel/UC1tXjw1PLxdxmZKqVZAuK2w"
+                    target="_blank"
+                  >
+                    <img className="w-auto h-7" src={youtube} alt="FB" />
+                  </Link>
                 </span>
                 <span className=" h-[50px] w-[50px] rounded-full flex items-center justify-center bg-white hover:bg-[#1779F3] hover:text-white text-[#3a9dd3] transition ease-in-out delay-150">
-                  <FaFacebook />
+                  {/* <FaFacebook /> */}
+                  <Link to="https://www.facebook.com/coursry/" target="_blank">
+                    <img className="w-auto h-7" src={facebook} alt="FB" />
+                  </Link>
                 </span>
                 <span className=" h-[50px] w-[50px] rounded-full flex items-center justify-center bg-white hover:bg-[#3a9dd3] hover:text-white text-[#3a9dd3] transition ease-in-out delay-150">
-                  <IoLogoTwitter />
+                  {/* <IoLogoTwitter /> */}
+                  <Link to="https://twitter.com/coursry" target="_blank">
+                    <img className="w-auto h-7" src={twitter} alt="FB" />
+                  </Link>
                 </span>
               </div>
               <h3 className="text-2xl font-bold ">Our Presence</h3>
