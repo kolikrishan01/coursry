@@ -34,8 +34,8 @@ const KnowledgePartnersArray = [
 export default function KnowledgePartners() {
   return (
     <>
-      <div className=" w-full h-[200px] flex items-center justify-center">
-        <h1 className=" text-5xl font-semibold uppercase text-[#10125c]">
+      <div className="h-[150px] flex items-center justify-center">
+        <h1 className="text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]">
           Our Knowledge Pa{" "}
           <span className="bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text">
             rtners
