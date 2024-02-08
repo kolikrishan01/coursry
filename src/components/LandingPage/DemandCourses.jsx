@@ -1,20 +1,17 @@
 import React, { useRef, useState } from 'react';
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
+
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import img1 from '../assets/courses/1.png'
-import img2 from '../assets/courses/2.png'
-import img3 from '../assets/courses/3.png'
+import img1 from "../assets/img/could_computing.jpeg";
+import img2 from "../assets/img/data-secience.jpeg";
+import img3 from "../assets/img/full-stack-developer.jpeg"
 
 
 
-// import './styles.css';
 
-// import required modules
 import { Pagination, HashNavigation } from 'swiper/modules';
 
 const DemandCoursesArray = [
@@ -25,6 +22,10 @@ const DemandCoursesArray = [
   {
     img:img2,
     name:"Data Science",
+  },
+  {
+    img:img3,
+    name:"Cyber Security",
   },
   {
     img:img3,
@@ -44,7 +45,7 @@ export default function DemandCourses() {
 </div>
       <Swiper
       slidesPerView={3}
-        spaceBetween={1}
+      spaceBetween={35}
         
         hashNavigation={{
           watchState: false,
@@ -77,18 +78,19 @@ export default function DemandCourses() {
         
         modules={[ Pagination, HashNavigation]}
         className="mySwiper"
+        style={{margin:"0 2rem"}}
       >
         {
         DemandCoursesArray?.map((item,index)=>{
           return(
-            <SwiperSlide key={index} className=' w-auto  flex items-center justify-center'>
-             <div class="relative flex w-full max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg">
+            <SwiperSlide key={index} className=' w-auto flex items-center justify-center'>
+             <div class="relative flex w-full flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg">
   <div class="relative mx-4 mt-4 overflow-hidden rounded-xl bg-blue-gray-500 bg-clip-border text-white shadow-lg shadow-blue-gray-500/40">
     <img
       src={item?.img}
       alt="ui/ux review check"
     />
-    <div class="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-tr from-transparent via-transparent to-black/60"></div>
+    {/* <div class="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-tr from-transparent via-transparent to-black/60"></div> */}
     
   </div>
   <div class="p-6">
@@ -99,16 +101,7 @@ export default function DemandCourses() {
       
     </div>
    
-    <div class="group mt-8 inline-flex flex-wrap items-center gap-3">
    
-     
-   
-      
-      
-      
-      
-
-    </div>
   </div>
   <div class="p-6 pt-3">
     <button
