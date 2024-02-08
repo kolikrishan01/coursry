@@ -34,17 +34,13 @@ const KnowledgePartnersArray = [
 export default function KnowledgePartners() {
   return (
     <>
-      <div className=" w-full h-[200px] flex items-center justify-center">
-        <h1 className=" text-5xl font-semibold uppercase text-[#10125c]">
-          Our Knowledge Pa{" "}
-          <span className="bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text">
-            rtners
-          </span>
-        </h1>
-      </div>
+    
+    <div className=' w-full h-[200px] flex items-center justify-center'>
+  <h1 className=' text-5xl font-semibold uppercase text-[#10125c]'>Our Knowledge Pa<span className='bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text'>rtners</span></h1>
+</div>
       <Swiper
         slidesPerView={4}
-        spaceBetween={0}
+        spaceBetween={25}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
