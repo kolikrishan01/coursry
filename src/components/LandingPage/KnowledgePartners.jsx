@@ -36,7 +36,7 @@ export default function KnowledgePartners() {
     <>
       <div className="h-[150px] flex items-center justify-center">
         <h1 className="text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]">
-          Our Knowledge Pa{" "}
+          Our Knowledge Pa
           <span className="bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text">
             rtners
           </span>
@@ -77,7 +77,7 @@ export default function KnowledgePartners() {
         {KnowledgePartnersArray?.map((item, index) => {
           return (
             <SwiperSlide key={index} className=" w-auto">
-              <div className=" flex items-center justify-center h-[300px]">
+              <div className=" flex items-center justify-center h-[200px]">
                 <img
                   src={item?.img}
                   alt=""

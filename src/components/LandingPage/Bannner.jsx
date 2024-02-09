@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import "./Banner.css"
 const Banner = () => {
   return (
     <>
@@ -8,11 +9,11 @@ const Banner = () => {
         <nav class="fixed z-10 w-full bg-white md:absolute md:bg-transparent">
           <div class="container m-auto px-2 md:px-12 lg:px-7"></div>
         </nav>
-        <div class="relative bg-yellow-50">
+        <div class="relative banner">
           <div class="container m-auto px-6 pt-32 md:px-12 lg:pt-[4.8rem] lg:px-7">
             <div class="flex items-center flex-wrap px-2 md:px-0">
               <div class="relative lg:w-6/12 lg:py-24 xl:py-32">
-                <h1 class="font-bold text-4xl text-yellow-900 md:text-5xl lg:w-10/12">
+                <h1 class="font-bold text-4xl text-white md:text-5xl lg:w-10/12">
                   Your favorite dishes, right at your door
                 </h1>
                 <form action="" class="w-full mt-12">
@@ -41,7 +42,7 @@ const Banner = () => {
                     </button>
                   </div>
                 </form>
-                <p class="mt-8 text-gray-700 lg:w-10/12">
+                <p class="mt-8 text-white lg:w-10/12">
                   Sit amet consectetur adipisicing elit.{" "}
                   <Link to="/" class="text-yellow-700">
                     connection
