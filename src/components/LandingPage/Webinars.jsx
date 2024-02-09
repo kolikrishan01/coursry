@@ -11,7 +11,7 @@ const Webinars = () => {
         </span>
       </h1>
       </div>
-      <div className=" flex items-center justify-center gap-8 flex-wrap p-6">
+      <div className=" flex items-center justify-center gap-8 flex-wrap p-6 text-center">
         <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
           <div className="flex justify-center items-center">
             <svg

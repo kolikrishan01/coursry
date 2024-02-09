@@ -60,9 +60,9 @@ const MentorsArray = [
 export default function Mentors() {
   return (
     <>
-     <div className="bg-slate-300 p-[3rem]">
-        <div className="w-full h-[200px] flex items-center justify-center">
-          <h1 className=" text-5xl font-semibold uppercase text-[#10125c]">
+     <div className=" p-[3rem]">
+        <div className=' w-full flex items-center justify-center h-[150px]'>
+          <h1 className='text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]'>
             OUR ME
             <span className="bg-gradient-to-r from-[#10125c] to-[#ff6e02] text-transparent bg-clip-text">
               NTORS
@@ -101,7 +101,7 @@ export default function Mentors() {
             return (
               <SwiperSlide
                 key={index}
-                className=" w-auto flex items-center justify-center"
+                className=" w-auto flex items-center justify-center pb-6"
               >
                 <div class="bg-white p-[1rem] rounded-lg shadow-md max-w-md w-full h-[22rem] ">
                   <div class="relative">

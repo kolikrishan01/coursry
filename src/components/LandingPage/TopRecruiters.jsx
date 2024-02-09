@@ -78,7 +78,7 @@ export default function TopRecruiters() {
         KnowledgePartnersArray?.map((item,index)=>{
           return(
             <SwiperSlide key={index} className=' w-auto'>
-              <div className=' flex items-center justify-center h-[300px]'>
+              <div className=' flex items-center justify-center h-[200px]'>
               <img src={item?.img} alt="" className='h-[150px] w-[150px] object-contain'/>
               </div>
             </SwiperSlide>
