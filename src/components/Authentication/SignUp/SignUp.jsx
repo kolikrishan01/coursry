@@ -3,9 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); // State for loading indicator
+
   const countryCodes = [
     { value: "+1", label: "+1 (United States)" },
     { value: "+7", label: "+7 (Russia)" },
@@ -264,6 +267,8 @@ export default function SignUp() {
     }
 
     try {
+      setLoading(true); // Show loader
+
       const csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
@@ -284,7 +289,10 @@ export default function SignUp() {
       );
 
       console.log(response);
-
+      localStorage.setItem("userInfo", JSON.stringify(response.data));
+      const token = response.data.token;
+      // Set token in a cookie with expiration date
+      Cookies.set("token", token, { expires: 7 });
       // Check if the request was successful (status code in the 2xx range)
       if (response.status >= 200 && response.status < 300) {
         // Reset form fields
@@ -299,7 +307,7 @@ export default function SignUp() {
         toast.success("Form submitted successfully!", {
           position: "top-right",
         });
-        navigate("/login");
+        navigate("/");
       } else {
         // Handle unsuccessful response (status code not in the 2xx range)
         throw new Error(
@@ -312,12 +320,19 @@ export default function SignUp() {
       toast.error("Failed to submit form data. Please try again later.", {
         position: "top-right",
       });
+    } finally {
+      setLoading(false); // Show loader
     }
   };
 
   return (
     <>
       <ToastContainer />
+      {loading && ( // Show loader conditionally
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
       <div class="bg-white relative ">
         <div
           class="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
