@@ -5,18 +5,18 @@ import "./Banner.css"
 const Banner = () => {
   return (
     <>
-      <div class="relative w-full">
+      <div class="relative w-full banner h-[86vh]">
         <nav class="fixed z-10 w-full bg-white md:absolute md:bg-transparent">
           <div class="container m-auto px-2 md:px-12 lg:px-7"></div>
         </nav>
-        <div class="relative banner">
+        <div class="relative ">
           <div class="container m-auto px-6 pt-32 md:px-12 lg:pt-[4.8rem] lg:px-7">
             <div class="flex items-center flex-wrap px-2 md:px-0">
               <div class="relative lg:w-6/12 lg:py-24 xl:py-32">
-                <h1 class="font-bold text-4xl text-white md:text-5xl lg:w-10/12">
+                {/* <h1 class="font-bold text-4xl text-white md:text-5xl lg:w-10/12">
                   Your favorite dishes, right at your door
-                </h1>
-                <form action="" class="w-full mt-12">
+                </h1> */}
+                {/* <form action="" class="w-full mt-12">
                   <div class="relative flex p-1 rounded-full bg-white border border-yellow-200 shadow-md md:p-2">
                     <input
                       placeholder="Search Courses"
@@ -41,14 +41,14 @@ const Banner = () => {
                       </svg>
                     </button>
                   </div>
-                </form>
-                <p class="mt-8 text-white lg:w-10/12">
+                </form> */}
+                {/* <p class="mt-8 text-white lg:w-10/12">
                   Sit amet consectetur adipisicing elit.{" "}
                   <Link to="/" class="text-yellow-700">
                     connection
                   </Link>{" "}
                   tenetur nihil quaerat suscipit, sunt dignissimos.
-                </p>
+                </p> */}
               </div>
             </div>
           </div>

@@ -13,10 +13,10 @@ const Home = () => {
   return (
     <>
       <Banner />
-      <KnowledgePartners />
+      <TopRecruiters />
       <DemandCourses />
       <Workflow />
-      <TopRecruiters />
+      <KnowledgePartners />
       <Webinars />
       <Testimonials />
       <Awards />
