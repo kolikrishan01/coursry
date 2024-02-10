@@ -1,10 +1,10 @@
 import React from "react";
 import logo from "../assets/coursry logo.png";
-import { FaLinkedin } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa6";
-import { FaYoutube } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
-import { IoLogoTwitter } from "react-icons/io";
+// import { FaLinkedin } from "react-icons/fa";
+// import { FaInstagram } from "react-icons/fa6";
+// import { FaYoutube } from "react-icons/fa";
+// import { FaFacebook } from "react-icons/fa";
+// import { IoLogoTwitter } from "react-icons/io";
 import { FaPhoneAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import facebook from "../assets/facebook_5968764.png";

@@ -91,7 +91,7 @@ function classNames(...classes) {
 export default function Header() {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  console.log(userInfo);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading indicator
 
