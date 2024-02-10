@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+
 export default function SignUp() {
+  const navigate = useNavigate();
   const countryCodes = [
     { value: "+1", label: "+1 (United States)" },
     { value: "+7", label: "+7 (Russia)" },
@@ -215,7 +218,7 @@ export default function SignUp() {
     name: "",
     email: "",
     password: "",
-    phoneNumber: "",
+    contact: "",
   });
 
   const handleChange = (e) => {
@@ -232,8 +235,9 @@ export default function SignUp() {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     // Validation checks
     if (!formData.name.trim()) {
       toast.error("Please enter a name", { position: "top-right" });
@@ -252,28 +256,63 @@ export default function SignUp() {
       );
       return;
     }
-    if (!formData.phoneNumber) {
+    if (!formData.contact) {
       toast.error("Please enter a valid phone number with country code", {
         position: "top-right",
       });
       return;
     }
 
-    console.log("Form submitted with data:", formData);
-    // Here you can perform further actions like sending data to a server
+    try {
+      const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
 
-    // Reset form fields
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      phoneNumber: "",
-    });
+      console.log(csrfToken);
 
-    // Show success toast
-    toast.success("Form submitted successfully!", {
-      position: "top-right",
-    });
+      // Send form data to the server with the CSRF token included in the headers
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/user/register",
+        formData,
+        {
+          headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+          },
+          withXSRFToken: true,
+        }
+      );
+
+      console.log(response);
+
+      // Check if the request was successful (status code in the 2xx range)
+      if (response.status >= 200 && response.status < 300) {
+        // Reset form fields
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          contact: "",
+        });
+
+        // Show success toast
+        toast.success("Form submitted successfully!", {
+          position: "top-right",
+        });
+        navigate("/login");
+      } else {
+        // Handle unsuccessful response (status code not in the 2xx range)
+        throw new Error(
+          "Failed to submit form data. Server returned status code: " +
+            response.status
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting form data:", error);
+      toast.error("Failed to submit form data. Please try again later.", {
+        position: "top-right",
+      });
+    }
   };
 
   return (
@@ -290,6 +329,7 @@ export default function SignUp() {
                 <img
                   src="https://res.cloudinary.com/macxenon/image/upload/v1631570592/Run_-_Health_qcghbu.png"
                   className="h-[450px] w-[450px] rounded mt-[-200px]"
+                  alt="#"
                 />
               </div>
             </div>
@@ -368,8 +408,8 @@ export default function SignUp() {
                       <input
                         placeholder="XXXX-9891-90"
                         type="text"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
+                        name="contact"
+                        value={formData.contact}
                         onChange={handleChange}
                         className="border placeholder-gray-400 focus:outline-none focus:border-black  pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-36 text-base block bg-white border-gray-300 rounded-md w-full"
                       />
