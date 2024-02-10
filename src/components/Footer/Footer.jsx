@@ -200,13 +200,13 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-    <div className=" w-full h-[70px] sticky bottom-0 bg-[#2C3E50] text-white z-50 flex items-center justify-evenly flex-wrap max-sm:gap-2 max-sm:h-[90px]">
+    <div className=" w-full py-1 sticky bottom-0 bg-[#2C3E50] text-white z-50 flex items-center justify-evenly flex-wrap max-sm:gap-2 max-sm:h-[90px]">
     <div className=" flex items-center justify-center gap-8">
      <span className=" flex items-center justify-center gap-2">
      <FaPhoneAlt />
       <p>Request a Callback</p>
      </span>
-                <Link className="-mx-3 block rounded-lg px-6 py-1 text-base font-semibold leading-7 bg-blue-600 text-center text-white">
+                <Link className="-mx-3 block rounded-lg px-6  text-base font-semibold leading-7 bg-blue-600 text-center text-white">
                   Call
                 </Link>
     </div>
