@@ -60,7 +60,7 @@ const MentorsArray = [
 export default function Mentors() {
   return (
     <>
-     <div className=" p-[3rem]">
+     {/* <div className=" p-[3rem]"> */}
         <div className=' w-full flex items-center justify-center h-[150px]'>
           <h1 className='text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]'>
             OUR ME
@@ -103,10 +103,10 @@ export default function Mentors() {
                 key={index}
                 className=" w-auto flex items-center justify-center pb-6"
               >
-                <div class="bg-white p-[1rem] rounded-lg shadow-md max-w-md w-full h-[22rem] ">
+                <div class="bg-white p-[1rem] rounded-lg shadow-md max-w-md w-full h-[100%] ">
                   <div class="relative">
                     <img
-                      src="https://placekitten.com/500/190"
+                      src="http://localhost:3000/static/media/data-secience.3e7ed8d61a074d3c2f94.jpeg"
                       alt="Banner Profile"
                       class="w-full rounded-t-lg"
                     />
@@ -126,7 +126,7 @@ export default function Mentors() {
                     Web Developer | Cat Lover | Coffee Enthusiast{" "}
                   </p>
 
-                  <div class="flex text-center justify-center items-center mt-[2rem] space-x-4">
+                  <div class="flex text-center justify-center items-center  space-x-4 mt-2">
                     <a href="#" class="text-blue-500 hover:underline">
                       {" "}
                       Twitter{" "}
@@ -146,7 +146,7 @@ export default function Mentors() {
           })}
           
       </Swiper>
-      </div>
+      {/* </div> */}
     </>
   );
 }
