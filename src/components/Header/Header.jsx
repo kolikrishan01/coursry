@@ -15,7 +15,10 @@ import {
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
 import logo from "../assets/coursry logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Courses = [
   {
@@ -86,10 +89,40 @@ function classNames(...classes) {
 }
 
 export default function Header() {
+  const navigate = useNavigate();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  console.log(userInfo);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // State for loading indicator
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      toast.success("Logout successful!", { position: "top-right" });
+      setTimeout(() => {
+        localStorage.removeItem("userInfo");
+        Cookies.remove("token");
+        navigate("/");
+      }, 2000);
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast.error("Failed to logout. Please try again later.", {
+        position: "top-right",
+      });
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }
+  };
 
   return (
     <header className="bg-white sticky top-0 z-50">
+      {loading && ( // Show loader conditionally
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
@@ -264,12 +297,23 @@ export default function Header() {
         </Popover.Group>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-center">
-          <Link
-            to="/login"
-            className="text-sm font-semibold leading-6 bg-blue-600 p-3 text-white rounded ml-[-20px]"
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </Link>
+          {userInfo ? (
+            // If user info exists, show logout button
+            <button
+              onClick={handleLogout}
+              className="text-sm font-semibold leading-6 bg-red-600 p-3 text-white rounded ml-[-20px]"
+            >
+              Logout <span aria-hidden="true"></span>
+            </button>
+          ) : (
+            // If user info does not exist, show login button
+            <Link
+              to="/login"
+              className="text-sm font-semibold leading-6 bg-blue-600 p-3 text-white rounded ml-[-20px]"
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </Link>
+          )}
         </div>
       </nav>
       <Dialog

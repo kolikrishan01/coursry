@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 export default function Login() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); // State for loading indicator
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,6 +38,8 @@ export default function Login() {
     // Here you can perform further actions like sending data to a server
 
     try {
+      setLoading(true); // Show loader
+
       const response = await axios.post(
         "http://127.0.0.1:8000/api/user/login",
         formData
@@ -45,9 +50,12 @@ export default function Login() {
       if (response.status >= 200 && response.status < 300) {
         // Extract token from response data
         const token = response.data.token;
-        console.log(token);
         // Set token in a cookie with expiration date
         Cookies.set("token", token, { expires: 7 });
+
+        // Store user information in localStorage
+        localStorage.setItem("userInfo", JSON.stringify(response.data));
+
         // Reset form fields
         setFormData({
           email: "",
@@ -55,9 +63,11 @@ export default function Login() {
         });
         // Cookies.set("token", response?.data?.token, { expires: 7 });
 
-        console.log(response);
+        console.log(response.data);
+        console.log("User", response.data.user);
         // Show success toast
         toast.success("Login successful!", { position: "top-right" });
+        navigate("/");
 
         // Redirect to another page, for example, the dashboard
       } else {
@@ -72,11 +82,18 @@ export default function Login() {
       toast.error("Failed to login. Please try again later.", {
         position: "top-right",
       });
+    } finally {
+      setLoading(false); // Hide loader
     }
   };
   return (
     <>
       <ToastContainer />
+      {loading && ( // Show loader conditionally
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
       <div class="bg-white relative">
         <div
           class="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-[-20px] mr-auto mb-0 ml-auto max-w-7xl
