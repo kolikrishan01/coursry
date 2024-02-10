@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import Cookies from "js-cookie";
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -16,7 +18,7 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) {
       toast.error("Please enter a valid email address", {
@@ -29,19 +31,48 @@ export default function Login() {
       return;
     }
 
-    console.log("Form submitted with data:", formData);
+    // console.log("Form submitted with data:", formData);
     // Here you can perform further actions like sending data to a server
 
-    // Reset form fields
-    setFormData({
-      email: "",
-      password: "",
-    });
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/user/login",
+        formData
+      );
+      console.log(response);
 
-    // Show success toast
-    toast.success("Form submitted successfully!", {
-      position: "top-right",
-    });
+      // Check if the request was successful
+      if (response.status >= 200 && response.status < 300) {
+        // Extract token from response data
+        const token = response.data.token;
+        console.log(token);
+        // Set token in a cookie with expiration date
+        Cookies.set("token", token, { expires: 7 });
+        // Reset form fields
+        setFormData({
+          email: "",
+          password: "",
+        });
+        // Cookies.set("token", response?.data?.token, { expires: 7 });
+
+        console.log(response);
+        // Show success toast
+        toast.success("Login successful!", { position: "top-right" });
+
+        // Redirect to another page, for example, the dashboard
+      } else {
+        // Handle unsuccessful response (status code not in the 2xx range)
+        throw new Error(
+          "Failed to submit form data. Server returned status code: " +
+            response.status
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting form data:", error);
+      toast.error("Failed to login. Please try again later.", {
+        position: "top-right",
+      });
+    }
   };
   return (
     <>
