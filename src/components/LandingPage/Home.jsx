@@ -8,6 +8,8 @@ import Webinars from "./Webinars";
 import Testimonials from "./Testimonials";
 import Awards from "./Awards";
 import Mentors from "./Mentors";
+import WhyChoosUs from "./WhyChoosUs";
+import LiveCommunity from "./LiveCommunity";
 
 const Home = () => {
   return (
@@ -16,6 +18,8 @@ const Home = () => {
       <TopRecruiters />
       <DemandCourses />
       <Workflow />
+      <LiveCommunity />
+      <WhyChoosUs />
       <KnowledgePartners />
       <Webinars />
       <Testimonials />
