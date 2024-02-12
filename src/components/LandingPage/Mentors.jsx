@@ -5,62 +5,39 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-import img1 from "../assets/courses/1.png";
-import img2 from "../assets/courses/2.png";
-import img3 from "../assets/courses/3.png";
-import img4 from "../assets/courses/4.jpeg";
-import img5 from "../assets/courses/5.png";
-import img6 from "../assets/courses/6.png";
-import img7 from "../assets/courses/7.png";
-import img9 from "../assets/courses/9.png";
+import img1 from "../assets/img/yash.png";
+import img2 from "../assets/img/Ranjeet Singh.png";
+import img3 from "../assets/img/Rishabh Gulati.png";
+import imgbg from "../assets/img/linkdin background.png"
 // import './styles.css';
 
 // import required modules
 import { Navigation } from 'swiper/modules';
 const MentorsArray = [
   {
+    image:imgbg,
     img: img1,
-    name: "Cloud Computing",
+    name: "Yash",
+    linkedin:"https://www.linkedin.com/in/yash-baghel-%F0%9F%87%AE%F0%9F%87%B3-425883191?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
   },
   {
+    image:imgbg,
     img: img2,
-    name: "Data Science",
+    name: "Ranjeet Singh",
+    linkedin:"https://www.linkedin.com/in/ranjeetsingh7890?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
   },
   {
+    image:imgbg,
     img: img3,
-    name: "Cyber Security",
-  },
-  {
-    img: img3,
-    name: "Cyber Security",
-  },
-
-  {
-    img: img4,
-    name: "Cyber Security",
-  },
-  {
-    img: img5,
-    name: "Cyber Security",
-  },
-  {
-    img: img6,
-    name: "Cyber Security",
-  },
-  {
-    img: img7,
-    name: "Cyber Security",
-  },
-  {
-    img: img9,
-    name: "Cyber Security",
+    name: "Rishabh Gulati",
+    linkedin:"https://www.linkedin.com/in/rishabh-gulati7/"
   },
 ];
 
 export default function Mentors() {
   return (
     <>
-     {/* <div className=" p-[3rem]"> */}
+     <div className=" p-[3rem]">
         <div className=' w-full flex items-center justify-center h-[150px]'>
           <h1 className='text-[3rem] max-sm:text-3xl max-md:text-4xl font-semibold uppercase text-[#10125c]'>
             OUR ME
@@ -73,7 +50,7 @@ export default function Mentors() {
       navigation={true} 
       modules={[Navigation]} 
       className="mySwiper"
-      slidesPerView={4}
+      slidesPerView={3}
       spaceBetween={35}
       breakpoints={{
         300: {
@@ -89,11 +66,11 @@ export default function Mentors() {
           spaceBetween: 20,
         },
         768: {
-          slidesPerView: 2,
+          slidesPerView: 3,
           spaceBetween: 40,
         },
         1024: {
-          slidesPerView: 4,
+          slidesPerView: 3,
           spaceBetween: 50,
         },
       }}>
@@ -103,42 +80,34 @@ export default function Mentors() {
                 key={index}
                 className=" w-auto flex items-center justify-center pb-6"
               >
-                <div class="bg-white p-[1rem] rounded-lg shadow-md max-w-md w-full h-[100%] ">
-                  <div class="relative">
+                <div className="bg-white p-[1rem] rounded-lg shadow-md max-w-md w-full h-[100%]">
+                  <div className="relative">
                     <img
-                      src="http://localhost:3000/static/media/data-secience.3e7ed8d61a074d3c2f94.jpeg"
+                      src={item?.image}
                       alt="Banner Profile"
-                      class="w-full rounded-t-lg"
+                      className="w-full rounded-t-lg"
                     />
                     <img
                       src={item?.img}
                       alt="Profile Picture"
-                      class="absolute bottom-0 left-2/4 transform -translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-4 border-white"
+                      className="absolute bottom-[2.5rem] left-2/4 transform -translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-2 border-white"
                     />
                   </div>
 
-                  <div class="flex items-center justify-center mt-[3rem]">
-                    <h1 class="text-xl font-bold text-gray-800 ">John Doe</h1>
+                  <div className="flex items-center justify-center mt-[1rem]">
+                    <h1 className="text-xl font-bold text-gray-800 ">{item?.name}</h1>
                   </div>
 
-                  <p class="text-gray-700 mt-[1rem] text-center">
+                  <p className="font-bold text-gray-700 mt-[1rem] text-center">
                     {" "}
-                    Web Developer | Cat Lover | Coffee Enthusiast{" "}
+                    Web Developer{" "}
                   </p>
 
-                  <div class="flex text-center justify-center items-center  space-x-4 mt-2">
-                    <a href="#" class="text-blue-500 hover:underline">
-                      {" "}
-                      Twitter{" "}
-                    </a>
-                    <a href="#" class="text-blue-500 hover:underline">
-                      {" "}
-                      GitHub{" "}
-                    </a>
-                    <a href="#" class="text-blue-500 hover:underline">
+                  <div className="flex text-center justify-center items-center  space-x-4 mt-2">
+                    <a href={item?.linkedin} className="text-blue-500 hover:underline">
                       {" "}
                       LinkedIn{" "}
-                    </a>
+                     </a>
                   </div>
                 </div>
               </SwiperSlide>
@@ -146,7 +115,7 @@ export default function Mentors() {
           })}
           
       </Swiper>
-      {/* </div> */}
+      </div>
     </>
   );
 }
