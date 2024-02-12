@@ -8,6 +8,8 @@ import Cookies from "js-cookie";
 export default function SignUp() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); // State for loading indicator
+  const [submitted, setSubmitted] = useState(false); // State for form submission status
+  const [showPopup, setShowPopup] = useState(false); // State to control popup display
 
   const countryCodes = [
     { value: "+1", label: "+1 (United States)" },
@@ -231,12 +233,64 @@ export default function SignUp() {
       [name]: value,
     }));
   };
-  const validatePassword = (password) => {
-    // Password validation regular expression
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,14}$/;
-    return passwordRegex.test(password);
-  };
+  // Lead Generation
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   // Validation checks
+  //   if (!formData.name.trim()) {
+  //     toast.error("Please enter a name", { position: "top-right" });
+  //     return;
+  //   }
+
+  //   if (!formData.contact) {
+  //     toast.error("Please enter a valid phone number with country code", {
+  //       position: "top-right",
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     setLoading(true); // Show loader
+
+  //     const response = await axios.post(
+  //       "http://127.0.0.1:8000/api/lead/postdata",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status >= 200 && response.status < 300) {
+  //       toast.success("Form submitted successfully!", {
+  //         position: "top-right",
+  //       });
+
+  //       // Update form data and set submitted state to true
+  //       setFormData((prevState) => ({
+  //         ...prevState,
+  //         email: "", // Clear email field
+  //         password: "", // Clear password field
+  //       }));
+  //       setSubmitted(true);
+  //       setShowPopup(true); // Display the popup after successful submission
+  //     } else {
+  //       throw new Error(
+  //         "Failed to submit form data. Server returned status code: " +
+  //           response.status
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting form data:", error);
+  //     toast.error("Failed to submit form data. Please try again later.", {
+  //       position: "top-right",
+  //     });
+  //   } finally {
+  //     setLoading(false); // Hide loader
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -246,19 +300,7 @@ export default function SignUp() {
       toast.error("Please enter a name", { position: "top-right" });
       return;
     }
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) {
-      toast.error("Please enter a valid email address", {
-        position: "top-right",
-      });
-      return;
-    }
-    if (!formData.password.trim() || !validatePassword(formData.password)) {
-      toast.error(
-        "Please enter a valid password (8-14 characters, at least one uppercase letter, one lowercase letter, one digit, and one special character)",
-        { position: "top-right" }
-      );
-      return;
-    }
+
     if (!formData.contact) {
       toast.error("Please enter a valid phone number with country code", {
         position: "top-right",
@@ -269,45 +311,79 @@ export default function SignUp() {
     try {
       setLoading(true); // Show loader
 
-      const csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
+      let apiUrl = ""; // Initialize variable to store API URL
 
-      console.log(csrfToken);
+      // Check if all required fields are filled
+      if (
+        formData.name.trim() &&
+        formData.contact &&
+        formData.email.trim() &&
+        formData.password.trim() &&
+        validatePassword(formData.password)
+      ) {
+        // If all required fields are filled, set the API URL for user registration
+        apiUrl = "http://127.0.0.1:8000/api/user/register";
+      } else {
+        // If any required field is missing, set the API URL for lead submission
+        apiUrl = "http://127.0.0.1:8000/api/lead/postdata";
+      }
 
-      // Send form data to the server with the CSRF token included in the headers
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/user/register",
-        formData,
-        {
-          headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            "Content-Type": "application/json",
-          },
-          withXSRFToken: true,
+      // Set headers
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      // Check if apiUrl is for user registration to include X-CSRF-TOKEN
+      if (apiUrl === "http://127.0.0.1:8000/api/user/register") {
+        const csrfToken = document
+          .querySelector('meta[name="csrf-token"]')
+          ?.getAttribute("content"); // Use optional chaining to prevent errors if the meta tag is not found
+        if (csrfToken) {
+          headers["X-CSRF-TOKEN"] = csrfToken;
+        } else {
+          throw new Error("CSRF token not found in meta tag");
         }
-      );
+      }
 
-      console.log(response);
-      localStorage.setItem("userInfo", JSON.stringify(response.data));
-      const token = response.data.token;
-      // Set token in a cookie with expiration date
-      Cookies.set("token", token, { expires: 7 });
-      // Check if the request was successful (status code in the 2xx range)
+      // Make the API call
+      const response = await axios.post(apiUrl, formData, {
+        headers,
+        withXSRFToken: true,
+      });
+
       if (response.status >= 200 && response.status < 300) {
-        // Reset form fields
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          contact: "",
-        });
-
-        // Show success toast
-        toast.success("Form submitted successfully!", {
-          position: "top-right",
-        });
-        navigate("/");
+        // If the request was successful, handle accordingly
+        if (apiUrl === "http://127.0.0.1:8000/api/user/register") {
+          localStorage.setItem("userInfo", JSON.stringify(response.data));
+          const token = response.data.token;
+          // Set token in a cookie with expiration date
+          Cookies.set("token", token, { expires: 7 });
+          // Reset form fields for user registration
+          setFormData({
+            name: "",
+            email: "",
+            password: "",
+            contact: "",
+          });
+          // Show success toast and navigate to home page
+          toast.success("User registered successfully!", {
+            position: "top-right",
+          });
+          navigate("/");
+        } else {
+          // If lead submission was successful, handle accordingly
+          toast.success("Lead submitted successfully!", {
+            position: "top-right",
+          });
+          // Update form data and set submitted state to true
+          setFormData((prevState) => ({
+            ...prevState,
+            email: "", // Clear email field
+            password: "", // Clear password field
+          }));
+          setSubmitted(true);
+          setShowPopup(true); // Display the popup after successful submission
+        }
       } else {
         // Handle unsuccessful response (status code not in the 2xx range)
         throw new Error(
@@ -321,26 +397,62 @@ export default function SignUp() {
         position: "top-right",
       });
     } finally {
-      setLoading(false); // Show loader
+      setLoading(false); // Hide loader
     }
   };
 
+  const validatePassword = (password) => {
+    // Password validation regular expression
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,14}$/;
+    return passwordRegex.test(password);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+  // Function to check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      formData.name.trim() && formData.contact.trim()
+      // formData.email.trim() &&
+      // formData.password.trim()
+    );
+  };
   return (
     <>
       <ToastContainer />
-      {loading && ( // Show loader conditionally
+      {loading && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
-      <div class="bg-white relative ">
-        <div
-          class="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
-      xl:px-5 lg:flex-row"
-        >
-          <div class="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
-            <div class="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
-              <div class="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg">
+            <h3 className="text-2xl font-semibold mb-4">
+              Complete your registration
+              <br />
+              <span className="text-xl">
+                You are just one step away from completing your account!
+              </span>
+            </h3>
+            <button
+              onClick={closePopup}
+              className="block mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
+            >
+              Complete Registration
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className={`relative ${showPopup ? "opacity-10" : ""}`}>
+        <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl xl:px-5 lg:flex-row">
+          <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
+            <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
+              <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
                 <img
                   src="https://res.cloudinary.com/macxenon/image/upload/v1631570592/Run_-_Health_qcghbu.png"
                   className="h-[450px] w-[450px] rounded mt-[-200px]"
@@ -348,21 +460,15 @@ export default function SignUp() {
                 />
               </div>
             </div>
-            <div class="w-full mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:w-5/12">
-              <div
-                class="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
-            relative z-10"
-              >
+            <div className="w-full mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:w-5/12">
+              <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl relative z-10">
                 <form onSubmit={handleSubmit}>
-                  <p class="w-full text-4xl font-medium text-center leading-snug font-serif">
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">
                     Sign up for an account
                   </p>
-                  <div class="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
-                    <div class="relative">
-                      <p
-                        class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                  absolute"
-                      >
+                  <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
+                    <div className="relative">
+                      <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
                         Name
                       </p>
                       <input
@@ -371,76 +477,84 @@ export default function SignUp() {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
                       />
                     </div>
-                    <div class="relative">
-                      <p class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
-                        Email
-                      </p>
-                      <input
-                        placeholder="123@ex.com"
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div class="relative">
-                      <p
-                        class="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                  absolute"
-                      >
-                        Password
-                      </p>
-                      <input
-                        placeholder="Pass@123"
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        class="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div className="relative flex">
+                    <div className="relative flex w-full">
                       {/* Dropdown for selecting country code */}
-                      <select
-                        name="countryCode"
-                        value={formData.countryCode}
-                        onChange={handleChange}
-                        className="absolute left-0 top-1 pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border border-gray-300 rounded-md w-1/4"
-                      >
-                        {countryCodes.map((country) => (
-                          <option key={country.value} value={country.value}>
-                            {country.label}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="w-1/2">
+                        <select
+                          name="countryCode"
+                          value={formData.countryCode}
+                          onChange={handleChange}
+                          className="absolute left-0 top-1 pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border border-gray-300 rounded-md w-1/3"
+                        >
+                          {countryCodes.map((country) => (
+                            <option key={country.value} value={country.value}>
+                              {country.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                       <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
                         Phone Number
                       </p>
-                      <input
-                        placeholder="XXXX-9891-90"
-                        type="text"
-                        name="contact"
-                        value={formData.contact}
-                        onChange={handleChange}
-                        className="border placeholder-gray-400 focus:outline-none focus:border-black  pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-36 text-base block bg-white border-gray-300 rounded-md w-full"
-                      />
+                      <div>
+                        <input
+                          placeholder="XXXX-9891-90"
+                          type="text"
+                          name="contact"
+                          value={formData.contact}
+                          onChange={handleChange}
+                          className="border placeholder-gray-400 focus:outline-none focus:border-black pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 text-base block bg-white border-gray-300 rounded-md "
+                        />
+                      </div>
                     </div>
-                    <div class="flex items-start">
-                      <div class="flex items-center h-5">
+                    {submitted && (
+                      <>
+                        <div className="relative">
+                          <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                            Email
+                          </p>
+                          <input
+                            placeholder="example@example.com"
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div className="relative">
+                          <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                            Password
+                          </p>
+                          <input
+                            placeholder="Password"
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </>
+                    )}
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
                         <input
                           id="terms"
                           aria-describedby="terms"
                           type="checkbox"
-                          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                          className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                           required
                         />
                       </div>
-                      <div class="ml-3 text-sm">
-                        <label for="terms" class="font-light text-black">
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="terms"
+                          className="font-light text-black"
+                        >
                           I accept the{" "}
                           <Link
                             to="#"
@@ -451,15 +565,22 @@ export default function SignUp() {
                         </label>
                       </div>
                     </div>
-                    <div class="relative">
+                    <div className="relative">
+                      {/* <button
+                        type="submit"
+                        className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-[#2563eb] rounded-lg transition duration-200 hover:bg-indigo-600 ease"
+                      > */}
                       <button
                         type="submit"
-                        class="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-[#2563eb] rounded-lg transition duration-200 hover:bg-indigo-600 ease"
+                        disabled={!isFormValid()} // Disable the button if the form is not valid
+                        className={`w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-[#2563eb] rounded-lg transition duration-200 hover:bg-indigo-600 ease ${
+                          !isFormValid() && "opacity-50 cursor-not-allowed" // Change opacity and cursor if form is not valid
+                        }`}
                       >
                         Sign up
                       </button>
                     </div>
-                    <p class="text-sm font-light text-black">
+                    <p className="text-sm font-light text-black">
                       Already have an account?{" "}
                       <Link
                         to="/login"
@@ -471,190 +592,6 @@ export default function SignUp() {
                   </div>
                 </form>
               </div>
-              <svg
-                viewbox="0 0 91 91"
-                class="absolute top-0 left-0 z-0 w-32 h-32 -mt-12 -ml-12 text-yellow-300
-            fill-current"
-              >
-                <g stroke="none" strokewidth="1" fillrule="evenodd">
-                  <g fillrule="nonzero">
-                    <g>
-                      <g>
-                        <circle cx="3.261" cy="3.445" r="2.72" />
-                        <circle cx="15.296" cy="3.445" r="2.719" />
-                        <circle cx="27.333" cy="3.445" r="2.72" />
-                        <circle cx="39.369" cy="3.445" r="2.72" />
-                        <circle cx="51.405" cy="3.445" r="2.72" />
-                        <circle cx="63.441" cy="3.445" r="2.72" />
-                        <circle cx="75.479" cy="3.445" r="2.72" />
-                        <circle cx="87.514" cy="3.445" r="2.719" />
-                      </g>
-                      <g transform="translate(0 12)">
-                        <circle cx="3.261" cy="3.525" r="2.72" />
-                        <circle cx="15.296" cy="3.525" r="2.719" />
-                        <circle cx="27.333" cy="3.525" r="2.72" />
-                        <circle cx="39.369" cy="3.525" r="2.72" />
-                        <circle cx="51.405" cy="3.525" r="2.72" />
-                        <circle cx="63.441" cy="3.525" r="2.72" />
-                        <circle cx="75.479" cy="3.525" r="2.72" />
-                        <circle cx="87.514" cy="3.525" r="2.719" />
-                      </g>
-                      <g transform="translate(0 24)">
-                        <circle cx="3.261" cy="3.605" r="2.72" />
-                        <circle cx="15.296" cy="3.605" r="2.719" />
-                        <circle cx="27.333" cy="3.605" r="2.72" />
-                        <circle cx="39.369" cy="3.605" r="2.72" />
-                        <circle cx="51.405" cy="3.605" r="2.72" />
-                        <circle cx="63.441" cy="3.605" r="2.72" />
-                        <circle cx="75.479" cy="3.605" r="2.72" />
-                        <circle cx="87.514" cy="3.605" r="2.719" />
-                      </g>
-                      <g transform="translate(0 36)">
-                        <circle cx="3.261" cy="3.686" r="2.72" />
-                        <circle cx="15.296" cy="3.686" r="2.719" />
-                        <circle cx="27.333" cy="3.686" r="2.72" />
-                        <circle cx="39.369" cy="3.686" r="2.72" />
-                        <circle cx="51.405" cy="3.686" r="2.72" />
-                        <circle cx="63.441" cy="3.686" r="2.72" />
-                        <circle cx="75.479" cy="3.686" r="2.72" />
-                        <circle cx="87.514" cy="3.686" r="2.719" />
-                      </g>
-                      <g transform="translate(0 49)">
-                        <circle cx="3.261" cy="2.767" r="2.72" />
-                        <circle cx="15.296" cy="2.767" r="2.719" />
-                        <circle cx="27.333" cy="2.767" r="2.72" />
-                        <circle cx="39.369" cy="2.767" r="2.72" />
-                        <circle cx="51.405" cy="2.767" r="2.72" />
-                        <circle cx="63.441" cy="2.767" r="2.72" />
-                        <circle cx="75.479" cy="2.767" r="2.72" />
-                        <circle cx="87.514" cy="2.767" r="2.719" />
-                      </g>
-                      <g transform="translate(0 61)">
-                        <circle cx="3.261" cy="2.846" r="2.72" />
-                        <circle cx="15.296" cy="2.846" r="2.719" />
-                        <circle cx="27.333" cy="2.846" r="2.72" />
-                        <circle cx="39.369" cy="2.846" r="2.72" />
-                        <circle cx="51.405" cy="2.846" r="2.72" />
-                        <circle cx="63.441" cy="2.846" r="2.72" />
-                        <circle cx="75.479" cy="2.846" r="2.72" />
-                        <circle cx="87.514" cy="2.846" r="2.719" />
-                      </g>
-                      <g transform="translate(0 73)">
-                        <circle cx="3.261" cy="2.926" r="2.72" />
-                        <circle cx="15.296" cy="2.926" r="2.719" />
-                        <circle cx="27.333" cy="2.926" r="2.72" />
-                        <circle cx="39.369" cy="2.926" r="2.72" />
-                        <circle cx="51.405" cy="2.926" r="2.72" />
-                        <circle cx="63.441" cy="2.926" r="2.72" />
-                        <circle cx="75.479" cy="2.926" r="2.72" />
-                        <circle cx="87.514" cy="2.926" r="2.719" />
-                      </g>
-                      <g transform="translate(0 85)">
-                        <circle cx="3.261" cy="3.006" r="2.72" />
-                        <circle cx="15.296" cy="3.006" r="2.719" />
-                        <circle cx="27.333" cy="3.006" r="2.72" />
-                        <circle cx="39.369" cy="3.006" r="2.72" />
-                        <circle cx="51.405" cy="3.006" r="2.72" />
-                        <circle cx="63.441" cy="3.006" r="2.72" />
-                        <circle cx="75.479" cy="3.006" r="2.72" />
-                        <circle cx="87.514" cy="3.006" r="2.719" />
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
-              <svg
-                viewbox="0 0 91 91"
-                class="absolute bottom-0 right-0 z-0 w-32 h-32 -mb-12 -mr-12 text-indigo-500
-            fill-current"
-              >
-                <g stroke="none" strokewidth="1" fillrule="evenodd">
-                  <g fillrule="nonzero">
-                    <g>
-                      <g>
-                        <circle cx="3.261" cy="3.445" r="2.72" />
-                        <circle cx="15.296" cy="3.445" r="2.719" />
-                        <circle cx="27.333" cy="3.445" r="2.72" />
-                        <circle cx="39.369" cy="3.445" r="2.72" />
-                        <circle cx="51.405" cy="3.445" r="2.72" />
-                        <circle cx="63.441" cy="3.445" r="2.72" />
-                        <circle cx="75.479" cy="3.445" r="2.72" />
-                        <circle cx="87.514" cy="3.445" r="2.719" />
-                      </g>
-                      <g transform="translate(0 12)">
-                        <circle cx="3.261" cy="3.525" r="2.72" />
-                        <circle cx="15.296" cy="3.525" r="2.719" />
-                        <circle cx="27.333" cy="3.525" r="2.72" />
-                        <circle cx="39.369" cy="3.525" r="2.72" />
-                        <circle cx="51.405" cy="3.525" r="2.72" />
-                        <circle cx="63.441" cy="3.525" r="2.72" />
-                        <circle cx="75.479" cy="3.525" r="2.72" />
-                        <circle cx="87.514" cy="3.525" r="2.719" />
-                      </g>
-                      <g transform="translate(0 24)">
-                        <circle cx="3.261" cy="3.605" r="2.72" />
-                        <circle cx="15.296" cy="3.605" r="2.719" />
-                        <circle cx="27.333" cy="3.605" r="2.72" />
-                        <circle cx="39.369" cy="3.605" r="2.72" />
-                        <circle cx="51.405" cy="3.605" r="2.72" />
-                        <circle cx="63.441" cy="3.605" r="2.72" />
-                        <circle cx="75.479" cy="3.605" r="2.72" />
-                        <circle cx="87.514" cy="3.605" r="2.719" />
-                      </g>
-                      <g transform="translate(0 36)">
-                        <circle cx="3.261" cy="3.686" r="2.72" />
-                        <circle cx="15.296" cy="3.686" r="2.719" />
-                        <circle cx="27.333" cy="3.686" r="2.72" />
-                        <circle cx="39.369" cy="3.686" r="2.72" />
-                        <circle cx="51.405" cy="3.686" r="2.72" />
-                        <circle cx="63.441" cy="3.686" r="2.72" />
-                        <circle cx="75.479" cy="3.686" r="2.72" />
-                        <circle cx="87.514" cy="3.686" r="2.719" />
-                      </g>
-                      <g transform="translate(0 49)">
-                        <circle cx="3.261" cy="2.767" r="2.72" />
-                        <circle cx="15.296" cy="2.767" r="2.719" />
-                        <circle cx="27.333" cy="2.767" r="2.72" />
-                        <circle cx="39.369" cy="2.767" r="2.72" />
-                        <circle cx="51.405" cy="2.767" r="2.72" />
-                        <circle cx="63.441" cy="2.767" r="2.72" />
-                        <circle cx="75.479" cy="2.767" r="2.72" />
-                        <circle cx="87.514" cy="2.767" r="2.719" />
-                      </g>
-                      <g transform="translate(0 61)">
-                        <circle cx="3.261" cy="2.846" r="2.72" />
-                        <circle cx="15.296" cy="2.846" r="2.719" />
-                        <circle cx="27.333" cy="2.846" r="2.72" />
-                        <circle cx="39.369" cy="2.846" r="2.72" />
-                        <circle cx="51.405" cy="2.846" r="2.72" />
-                        <circle cx="63.441" cy="2.846" r="2.72" />
-                        <circle cx="75.479" cy="2.846" r="2.72" />
-                        <circle cx="87.514" cy="2.846" r="2.719" />
-                      </g>
-                      <g transform="translate(0 73)">
-                        <circle cx="3.261" cy="2.926" r="2.72" />
-                        <circle cx="15.296" cy="2.926" r="2.719" />
-                        <circle cx="27.333" cy="2.926" r="2.72" />
-                        <circle cx="39.369" cy="2.926" r="2.72" />
-                        <circle cx="51.405" cy="2.926" r="2.72" />
-                        <circle cx="63.441" cy="2.926" r="2.72" />
-                        <circle cx="75.479" cy="2.926" r="2.72" />
-                        <circle cx="87.514" cy="2.926" r="2.719" />
-                      </g>
-                      <g transform="translate(0 85)">
-                        <circle cx="3.261" cy="3.006" r="2.72" />
-                        <circle cx="15.296" cy="3.006" r="2.719" />
-                        <circle cx="27.333" cy="3.006" r="2.72" />
-                        <circle cx="39.369" cy="3.006" r="2.72" />
-                        <circle cx="51.405" cy="3.006" r="2.72" />
-                        <circle cx="63.441" cy="3.006" r="2.72" />
-                        <circle cx="75.479" cy="3.006" r="2.72" />
-                        <circle cx="87.514" cy="3.006" r="2.719" />
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
             </div>
           </div>
         </div>
