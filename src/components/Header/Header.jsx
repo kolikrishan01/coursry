@@ -301,7 +301,7 @@ export default function Header() {
             // If user info exists, show logout button
             <button
               onClick={handleLogout}
-              className="text-sm font-semibold leading-6 bg-red-600 p-3 text-white rounded ml-[-20px]"
+              className="text-sm font-semibold leading-6 bg-[rgb(239,1,0)] p-3 text-white rounded ml-[-20px]"
             >
               Logout <span aria-hidden="true"></span>
             </button>
