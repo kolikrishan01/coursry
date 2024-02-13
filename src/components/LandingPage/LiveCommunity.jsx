@@ -263,11 +263,11 @@ const MessageComponent = ({ message, index }) => {
   useEffect(() => {
     const timeout1 = setTimeout(() => {
       setDisplayMsg1(true);
-    }, (index + 1) * 3000); 
+    }, (index + 1) * 3000);
 
     const timeout2 = setTimeout(() => {
       setDisplayMsg2(true);
-    }, (index + 1) * 3000 + 2000); 
+    }, (index + 1) * 3000 + 2000);
 
     return () => {
       clearTimeout(timeout1);
