@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import Cookies from "js-cookie";
-
-export default function SignUp() {
-  const navigate = useNavigate();
+const Modal = ({ onClose }) => {
   const [loading, setLoading] = useState(false); // State for loading indicator
-  const [submitted, setSubmitted] = useState(false); // State for form submission status
-  const [showPopup, setShowPopup] = useState(false); // State to control popup display
-
   const countryCodes = [
     { value: "+1", label: "+1 (United States)" },
     { value: "+7", label: "+7 (Russia)" },
@@ -225,7 +219,6 @@ export default function SignUp() {
     password: "",
     contact: "",
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -233,7 +226,7 @@ export default function SignUp() {
       [name]: value,
     }));
   };
-
+  // Lead Generation
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -253,81 +246,32 @@ export default function SignUp() {
     try {
       setLoading(true); // Show loader
 
-      let apiUrl = ""; // Initialize variable to store API URL
-
-      // Check if all required fields are filled
-      if (
-        formData.name.trim() &&
-        formData.contact &&
-        formData.email.trim() &&
-        formData.password.trim() &&
-        validatePassword(formData.password)
-      ) {
-        // If all required fields are filled, set the API URL for user registration
-        apiUrl = "http://127.0.0.1:8000/api/user/register";
-      } else {
-        // If any required field is missing, set the API URL for lead submission
-        apiUrl = "http://127.0.0.1:8000/api/lead/postdata";
-      }
-
-      // Set headers
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      // Check if apiUrl is for user registration to include X-CSRF-TOKEN
-      if (apiUrl === "http://127.0.0.1:8000/api/user/register") {
-        const csrfToken = document
-          .querySelector('meta[name="csrf-token"]')
-          ?.getAttribute("content"); // Use optional chaining to prevent errors if the meta tag is not found
-        if (csrfToken) {
-          headers["X-CSRF-TOKEN"] = csrfToken;
-        } else {
-          throw new Error("CSRF token not found in meta tag");
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/lead/postdata",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
-
-      // Make the API call
-      const response = await axios.post(apiUrl, formData, {
-        headers,
-        withXSRFToken: true,
-      });
+      );
 
       if (response.status >= 200 && response.status < 300) {
-        // If the request was successful, handle accordingly
-        if (apiUrl === "http://127.0.0.1:8000/api/user/register") {
-          localStorage.setItem("userInfo", JSON.stringify(response.data));
-          const token = response.data.token;
-          // Set token in a cookie with expiration date
-          Cookies.set("token", token, { expires: 7 });
-          // Reset form fields for user registration
-          setFormData({
-            name: "",
-            email: "",
-            password: "",
-            contact: "",
-          });
-          // Show success toast and navigate to home page
-          toast.success("User registered successfully!", {
-            position: "top-right",
-          });
-          navigate("/");
-        } else {
-          // If lead submission was successful, handle accordingly
-          toast.success("Lead submitted successfully!", {
-            position: "top-right",
-          });
-          // Update form data and set submitted state to true
-          setFormData((prevState) => ({
-            ...prevState,
-            email: "", // Clear email field
-            password: "", // Clear password field
-          }));
-          setSubmitted(true);
-          setShowPopup(true); // Display the popup after successful submission
-        }
+        toast.success("Form submitted successfully!", {
+          position: "top-right",
+        });
+
+        // Reset form data
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          contact: "",
+        });
+
+        // Close the modal
+        onClose();
       } else {
-        // Handle unsuccessful response (status code not in the 2xx range)
         throw new Error(
           "Failed to submit form data. Server returned status code: " +
             response.status
@@ -343,24 +287,9 @@ export default function SignUp() {
     }
   };
 
-  const validatePassword = (password) => {
-    // Password validation regular expression
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,14}$/;
-    return passwordRegex.test(password);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
   // Function to check if all required fields are filled
   const isFormValid = () => {
-    return (
-      formData.name.trim() && formData.contact.trim()
-      // formData.email.trim() &&
-      // formData.password.trim()
-    );
+    return formData.name.trim() && formData.contact.trim();
   };
   return (
     <>
@@ -370,174 +299,103 @@ export default function SignUp() {
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
-      {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-4">
-              Complete your registration
-              <br />
-              <span className="text-xl">
-                You are just one step away from completing your account!
-              </span>
+      <div className="fixed inset-0 flex justify-center items-center z-50 bg-black opacity-100">
+        <button
+          className="absolute top-0 right-0 p-2 m-2 rounded-full bg-black text-white"
+          onClick={onClose}
+        >
+          X
+        </button>
+        <div className="relative bg-white rounded-lg p-8 max-w-sm w-full">
+          <form onSubmit={handleSubmit}>
+            <h3 className="text-3xl font-semibold text-center mb-4">
+              Get a Callback
             </h3>
-            <button
-              onClick={closePopup}
-              className="block mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
-            >
-              Complete Registration
-            </button>
-          </div>
-        </div>
-      )}
 
-      <div className={`relative ${showPopup ? "opacity-10" : ""}`}>
-        <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl xl:px-5 lg:flex-row">
-          <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
-            <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
-              <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                <img
-                  src="https://res.cloudinary.com/macxenon/image/upload/v1631570592/Run_-_Health_qcghbu.png"
-                  className="h-[450px] w-[450px] rounded mt-[-200px]"
-                  alt="#"
+            <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
+              <div className="relative">
+                <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                  Name
+                </p>
+                <input
+                  placeholder="John"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
                 />
               </div>
-            </div>
-            <div className="w-full mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:w-5/12">
-              <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl relative z-10">
-                <form onSubmit={handleSubmit}>
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">
-                    Sign up for an account
-                  </p>
-                  <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
-                    <div className="relative">
-                      <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
-                        Name
-                      </p>
-                      <input
-                        placeholder="John"
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div className="relative flex w-full">
-                      {/* Dropdown for selecting country code */}
-                      <div className="w-1/2">
-                        <select
-                          name="countryCode"
-                          value={formData.countryCode}
-                          onChange={handleChange}
-                          className="absolute left-0 top-1 pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border border-gray-300 rounded-md w-1/3"
-                        >
-                          {countryCodes.map((country) => (
-                            <option key={country.value} value={country.value}>
-                              {country.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
-                        Phone Number
-                      </p>
-                      <div>
-                        <input
-                          placeholder="XXXX-9891-90"
-                          type="text"
-                          name="contact"
-                          value={formData.contact}
-                          onChange={handleChange}
-                          className="border placeholder-gray-400 focus:outline-none focus:border-black pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 text-base block bg-white border-gray-300 rounded-md "
-                        />
-                      </div>
-                    </div>
-                    {submitted && (
-                      <>
-                        <div className="relative">
-                          <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
-                            Email
-                          </p>
-                          <input
-                            placeholder="example@example.com"
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
-                          />
-                        </div>
-                        <div className="relative">
-                          <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
-                            Password
-                          </p>
-                          <input
-                            placeholder="Password"
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
-                          />
-                        </div>
-                      </>
-                    )}
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="terms"
-                          aria-describedby="terms"
-                          type="checkbox"
-                          className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                          required
-                        />
-                      </div>
-                      <div className="ml-3 text-sm">
-                        <label
-                          htmlFor="terms"
-                          className="font-light text-black"
-                        >
-                          I accept the{" "}
-                          <Link
-                            to="#"
-                            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                          >
-                            Terms and Conditions
-                          </Link>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="relative">
-                      {/* <button
-                        type="submit"
-                        className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-[#2563eb] rounded-lg transition duration-200 hover:bg-indigo-600 ease"
-                      > */}
-                      <button
-                        type="submit"
-                        disabled={!isFormValid()} // Disable the button if the form is not valid
-                        className={`w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-[#2563eb] rounded-lg transition duration-200 hover:bg-indigo-600 ease ${
-                          !isFormValid() && "opacity-50 cursor-not-allowed" // Change opacity and cursor if form is not valid
-                        }`}
-                      >
-                        Sign up
-                      </button>
-                    </div>
-                    <p className="text-sm font-light text-black">
-                      Already have an account?{" "}
-                      <Link
-                        to="/login"
-                        className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                      >
-                        Login
-                      </Link>
-                    </p>
-                  </div>
-                </form>
+              <div className="relative flex w-full">
+                {/* Dropdown for selecting country code */}
+                <div className="w-1/2">
+                  <select
+                    name="countryCode"
+                    value={formData.countryCode}
+                    onChange={handleChange}
+                    className="absolute left-0 top-1 pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border border-gray-300 rounded-md w-1/3"
+                  >
+                    {countryCodes.map((country) => (
+                      <option key={country.value} value={country.value}>
+                        {country.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                  Phone Number
+                </p>
+                <div>
+                  <input
+                    placeholder="XXXX-9891-90"
+                    type="text"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    className="border placeholder-gray-400 focus:outline-none focus:border-black pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 text-base block bg-white border-gray-300 rounded-md "
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-start">
+                <div className="flex items-center h-5">
+                  <input
+                    id="terms"
+                    aria-describedby="terms"
+                    type="checkbox"
+                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                    required
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label htmlFor="terms" className="font-light text-black">
+                    I accept the{" "}
+                    <Link
+                      to="#"
+                      className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                    >
+                      Terms and Conditions
+                    </Link>
+                  </label>
+                </div>
+              </div>
+              <div className="relative">
+                <button
+                  type="submit"
+                  disabled={!isFormValid()} // Disable the button if the form is not valid
+                  className={`w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-[#2563eb] rounded-lg transition duration-200 hover:bg-indigo-600 ease ${
+                    !isFormValid() && "opacity-50 cursor-not-allowed" // Change opacity and cursor if form is not valid
+                  }`}
+                >
+                  Get a CallBack
+                </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>
   );
-}
+};
+
+export default Modal;
