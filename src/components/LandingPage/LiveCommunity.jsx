@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const LiveCommunity = () => {
   const [messages, setMessages] = useState([]);
+  const [screen, setScreen] = useState(0);
 
   useEffect(() => {
+    
     const chatApp = [
       {
         msg1: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
@@ -33,6 +35,14 @@ const LiveCommunity = () => {
 
     setMessages(chatApp);
   }, []);
+
+  window.addEventListener('scroll', ()=>{
+    let scrollPosition = window.scrollY;
+    setScreen(scrollPosition)
+});
+
+
+
 
   return (
     <div className="bg-gray-100 h-screen flex flex-col max-w-lg mx-auto">
@@ -212,11 +222,11 @@ const LiveCommunity = () => {
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      {screen && <div className="flex-1 overflow-y-auto p-4">
         {messages.map((item, index) => (
           <MessageComponent key={index} message={item} index={index} />
         ))}
-      </div>
+      </div>}
 
       <div className="bg-white p-4 flex items-center">
         <input
@@ -252,6 +262,7 @@ const LiveCommunity = () => {
           </svg>
         </button>
       </div>
+      
     </div>
   );
 };
@@ -260,7 +271,12 @@ const MessageComponent = ({ message, index }) => {
   const [displayMsg1, setDisplayMsg1] = useState(false);
   const [displayMsg2, setDisplayMsg2] = useState(false);
 
+
+
+
+ 
   useEffect(() => {
+
     const timeout1 = setTimeout(() => {
       setDisplayMsg1(true);
     }, (index + 1) * 3000); 
@@ -273,11 +289,12 @@ const MessageComponent = ({ message, index }) => {
       clearTimeout(timeout1);
       clearTimeout(timeout2);
     };
+    
   }, [index]);
 
   return (
-    <>
-      <div className="flex flex-col space-y-4">
+<>
+      <div className="flex flex-col space-y-4" >
         <div className="flex justify-end pt-4">
           {displayMsg1 && (
             <div className="flex">
@@ -295,7 +312,8 @@ const MessageComponent = ({ message, index }) => {
           </div>
         )}
       </div>
-    </>
+     
+      </>
   );
 };
 
