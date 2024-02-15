@@ -10,6 +10,7 @@ import Awards from "./Awards";
 import Mentors from "./Mentors";
 import WhyChoosUs from "./WhyChoosUs";
 import LiveCommunity from "./LiveCommunity";
+import Instructor from "./Instructor";
 
 const Home = () => {
   return (
@@ -25,6 +26,7 @@ const Home = () => {
       <Testimonials />
       <Awards />
       <Mentors />
+      <Instructor />
     </>
   );
 };
