@@ -34,15 +34,12 @@ const LiveCommunity = () => {
     ];
 
     setMessages(chatApp);
-  }, []);
+  },[]);
 
   window.addEventListener('scroll', ()=>{
     let scrollPosition = window.scrollY;
     setScreen(scrollPosition)
 });
-
-
-
 
   return (
     <div className="bg-gray-100 h-screen flex flex-col max-w-lg mx-auto">
@@ -222,13 +219,14 @@ const LiveCommunity = () => {
           </div>
         </div>
       </div>
+     
       {screen && <div className="flex-1 overflow-y-auto p-4">
         {messages.map((item, index) => (
           <MessageComponent key={index} message={item} index={index} />
         ))}
       </div>}
 
-      <div className="bg-white p-4 flex items-center">
+      <div className="bg-white p-4 flex items-center border">
         <input
           type="text"
           placeholder="Type your message..."
@@ -290,7 +288,7 @@ const MessageComponent = ({ message, index }) => {
       clearTimeout(timeout2);
     };
     
-  }, [index]);
+  },[index]);
 
   return (
 <>
