@@ -25,11 +25,11 @@ const DemandCoursesArray = [
   },
   {
     img:img3,
-    name:"Cyber Security",
+    name:"Full Stack Development",
   },
   {
     img:img3,
-    name:"Cyber Security",
+    name:"Full Stack Development",
   },
   
  
