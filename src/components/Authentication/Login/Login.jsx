@@ -6,7 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 export default function Login() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // State for loading indicator
+  const [loading, setLoading] = useState(false); 
 
   const [formData, setFormData] = useState({
     email: "",
@@ -42,7 +42,7 @@ export default function Login() {
       setLoading(true); // Show loader
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/user/login",
+        "https://zany-jade-squirrel-gown.cyclic.app/api/login",
         formData
       );
       console.log(response);
