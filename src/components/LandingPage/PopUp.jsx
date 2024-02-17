@@ -247,7 +247,7 @@ const Modal = ({ onClose }) => {
       setLoading(true); // Show loader
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/lead/postdata",
+        "https://zany-jade-squirrel-gown.cyclic.app/api/lead",
         formData,
         {
           headers: {

@@ -124,14 +124,14 @@ export default function Header() {
         </div>
       )}
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex w-full items-center justify-between p-6 lg:px-8 gap-8"
         aria-label="Global"
       >
-        <div className="flex lg:flex-1">
-          <Link to="/" className="-m-1.5 p-1.5">
-            <img className="h-[50px] w-[120px]" src={logo} alt="" />
+        <div className="flex lg:flex-1 items-center justify-around pr-7">
+          <Link to="/" className="-m-8 p-0">
+            <img className="h-[80px] w-auto" src={logo} alt="" />
           </Link>
-          <Popover className="relative bg-blue-600 rounded ml-[80px] hidden lg:flex lg:gap-x-12">
+          <Popover className="relative bg-blue-600 rounded ml-[80px] hidden lg:flex lg:gap-x-12 h-[50px]">
             <Popover.Button className="flex items-center p-3 text-white gap-x-1 text-sm font-semibold leading-6 outline-none ">
               Courses
               <ChevronDownIcon
