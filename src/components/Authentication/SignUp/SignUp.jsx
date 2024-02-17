@@ -11,11 +11,6 @@ export default function SignUp() {
   const [submitted, setSubmitted] = useState(false); // State for form submission status
   const [showPopup, setShowPopup] = useState(false); // State to control popup display
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    contact: "",
-  });
   const countryCodes = [
     { value: "+1", label: "+1 (United States)" },
     { value: "+7", label: "+7 (Russia)" },
@@ -224,7 +219,11 @@ export default function SignUp() {
     { value: "+996", label: "+996 (Kyrgyzstan)" },
     { value: "+998", label: "+998 (Uzbekistan)" },
   ];
-  
+  const [formData, setFormData] = useState({
+    name: "",
+    countryCode: "",
+    phone: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -233,53 +232,46 @@ export default function SignUp() {
       [name]: value,
     }));
   };
-
+  console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation checks
-    if (!formData.name.trim()) {
-      toast.error("Please enter a name", { position: "top-right" });
-      return;
-    }
-
-    if (!formData.contact) {
-      toast.error("Please enter a valid phone number with country code", {
-        position: "top-right",
-      });
+    if (!formData.name.trim() || !formData.phone) {
+      toast.error(
+        "Please enter a valid name and phone number with country code",
+        {
+          position: "top-right",
+        }
+      );
       return;
     }
 
     try {
-      setLoading(true); // Show loader
+      setLoading(true);
 
-      let apiUrl = ""; // Initialize variable to store API URL
+      let apiUrl = "";
 
-      // Check if all required fields are filled
       if (
         formData.name.trim() &&
-        formData.contact &&
-        formData.email.trim() &&
-        formData.password.trim() &&
-        validatePassword(formData.password)
+        formData.phone &&
+        formData.email &&
+        formData.password
       ) {
-        // If all required fields are filled, set the API URL for user registration
-        apiUrl = "https://zany-jade-squirrel-gown.cyclic.app/api/register";
+        apiUrl = "https://busy-teal-barracuda-garb.cyclic.app/api/register";
       } else {
-        // If any required field is missing, set the API URL for lead submission
-        apiUrl = "https://zany-jade-squirrel-gown.cyclic.app/api/lead";
+        apiUrl = "https://busy-teal-barracuda-garb.cyclic.app/api/lead";
       }
 
-      // Set headers
       const headers = {
         "Content-Type": "application/json",
       };
 
-      // Check if apiUrl is for user registration to include X-CSRF-TOKEN
-      if (apiUrl === "https://zany-jade-squirrel-gown.cyclic.app/api/register") {
+      if (
+        apiUrl === "https://busy-teal-barracuda-garb.cyclic.app/api/register"
+      ) {
         const csrfToken = document
           .querySelector('meta[name="csrf-token"]')
-          ?.getAttribute("content"); // Use optional chaining to prevent errors if the meta tag is not found
+          ?.getAttribute("content");
         if (csrfToken) {
           headers["X-CSRF-TOKEN"] = csrfToken;
         } else {
@@ -287,47 +279,41 @@ export default function SignUp() {
         }
       }
 
-      // Make the API call
       const response = await axios.post(apiUrl, formData, {
         headers,
         withXSRFToken: true,
       });
 
       if (response.status >= 200 && response.status < 300) {
-        // If the request was successful, handle accordingly
-        if (apiUrl === "https://zany-jade-squirrel-gown.cyclic.app/api/register") {
+        if (
+          apiUrl === "https://busy-teal-barracuda-garb.cyclic.app/api/register"
+        ) {
           localStorage.setItem("userInfo", JSON.stringify(response.data));
           const token = response.data.token;
-          // Set token in a cookie with expiration date
           Cookies.set("token", token, { expires: 7 });
-          // Reset form fields for user registration
           setFormData({
             name: "",
             email: "",
             password: "",
-            contact: "",
+            phone: "",
           });
-          // Show success toast and navigate to home page
           toast.success("User registered successfully!", {
             position: "top-right",
           });
           navigate("/");
         } else {
-          // If lead submission was successful, handle accordingly
           toast.success("Lead submitted successfully!", {
             position: "top-right",
           });
-          // Update form data and set submitted state to true
           setFormData((prevState) => ({
             ...prevState,
-            email: "", // Clear email field
-            password: "", // Clear password field
+            email: "",
+            password: "",
           }));
           setSubmitted(true);
-          setShowPopup(true); // Display the popup after successful submission
+          setShowPopup(true);
         }
       } else {
-        // Handle unsuccessful response (status code not in the 2xx range)
         throw new Error(
           "Failed to submit form data. Server returned status code: " +
             response.status
@@ -339,7 +325,7 @@ export default function SignUp() {
         position: "top-right",
       });
     } finally {
-      setLoading(false); // Hide loader
+      setLoading(false);
     }
   };
 
@@ -357,7 +343,7 @@ export default function SignUp() {
   // Function to check if all required fields are filled
   const isFormValid = () => {
     return (
-      formData.name.trim() && formData.contact.trim()
+      formData.name.trim() && formData.phone.trim()
       // formData.email.trim() &&
       // formData.password.trim()
     );
@@ -445,8 +431,8 @@ export default function SignUp() {
                         <input
                           placeholder="XXXX-9891-90"
                           type="text"
-                          name="contact"
-                          value={formData.contact}
+                          name="phone"
+                          value={formData.phone}
                           onChange={handleChange}
                           className="border placeholder-gray-400 focus:outline-none focus:border-black pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 text-base block bg-white border-gray-300 rounded-md "
                         />
