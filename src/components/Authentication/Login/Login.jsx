@@ -6,7 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 export default function Login() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false); // State for loading indicator
 
   const [formData, setFormData] = useState({
     email: "",
@@ -33,7 +33,6 @@ export default function Login() {
       toast.error("Please enter a valid password!", { position: "top-right" });
       return;
     }
-    
 
     // console.log("Form submitted with data:", formData);
     // Here you can perform further actions like sending data to a server
@@ -42,7 +41,7 @@ export default function Login() {
       setLoading(true); // Show loader
 
       const response = await axios.post(
-        "https://zany-jade-squirrel-gown.cyclic.app/api/login",
+        "https://busy-teal-barracuda-garb.cyclic.app/api/login",
         formData
       );
       console.log(response);
