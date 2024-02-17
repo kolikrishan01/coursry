@@ -11,6 +11,7 @@ import Mentors from "./Mentors";
 import WhyChoosUs from "./WhyChoosUs";
 import LiveCommunity from "./LiveCommunity";
 import Instructor from "./Instructor";
+import ContactForm from "./ContactForm";
 
 const Home = () => {
   return (
@@ -27,6 +28,7 @@ const Home = () => {
       <Awards />
       <Mentors />
       <Instructor/>
+      <ContactForm/>
     </>
   );
 };
