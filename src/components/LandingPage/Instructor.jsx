@@ -123,7 +123,7 @@ const Instructor = () => {
                 </div>
                 <div>
                     <div className="flex -mx-3">
-                        <div className="w-1/2 px-3 mb-5">
+                        <div className="w-full px-3 mb-5">
                             <label for="" className="text-xs font-semibold px-1">First name</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
